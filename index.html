@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fully Responsive Showcase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #ffffff;
+      --text: #111;
+      --accent: #0077ff;
+      --card-bg: #f8f9fa;
+    }
+
+    body.dark {
+      --bg: #111;
+      --text: #ffffff;
+      --accent: #00bfff;
+      --card-bg: #1e1e1e;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.4s, color 0.4s;
+      overflow-x: hidden;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    /* Loader Animation */
+    #loader {
+      position: fixed;
+      background: var(--bg);
+      width: 100%;
+      height: 100%;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loader-circle {
+      width: 50px;
+      height: 50px;
+      border: 5px solid var(--accent);
+      border-radius: 50%;
+      border-top-color: transparent;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Theme Toggle - Position adjusted for mobile */
+    #theme-toggle {
+      position: fixed;
+      top: 0.5rem;
+      right: 0.5rem;
+      background: var(--accent);
+      border: none;
+      color: white;
+      padding: 0.5rem;
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 100;
+      transition: transform 0.3s;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #theme-toggle:hover {
+      transform: scale(1.1);
+    }
+
+    /* Navbar - Responsive */
+    .navbar {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      background: rgba(0, 119, 255, 0.9);
+      padding: 0.75rem;
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      backdrop-filter: blur(5px);
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      position: relative;
+      padding: 0.5rem;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .navbar a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: 0;
+      left: 0;
+      background-color: white;
+      transition: width 0.3s;
+    }
+
+    .navbar a:hover::after {
+      width: 100%;
+    }
+
+    /* Hero Section - Responsive */
+    .hero {
+      min-height: 100vh;
+      height: auto;
+      padding: 2rem 1rem;
+      background: linear-gradient(135deg, rgba(0,119,255,0.8) 0%, rgba(0,191,255,0.8) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 6vw, 4rem);
+      margin-bottom: 1rem;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      animation: fadeInUp 1s ease-out;
+      line-height: 1.2;
+      padding: 0 1rem;
+    }
+
+    .hero p {
+      font-size: clamp(1rem, 3vw, 1.5rem);
+      margin-bottom: 2rem;
+      animation: fadeInUp 1s ease-out 0.2s forwards;
+      opacity: 0;
+      line-height: 1.5;
+      padding: 0 1rem;
+      max-width: 800px;
+    }
+
+    .hero-btn {
+      padding: 0.75rem 1.5rem;
+      background: white;
+      color: var(--accent);
+      border: none;
+      border-radius: 50px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      animation: fadeInUp 1s ease-out 0.4s forwards;
+      opacity: 0;
+      font-size: 1rem;
+      min-width: 150px;
+    }
+
+    .hero-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Ripple Effect - Responsive */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.3);
+      transform: scale(0);
+      animation: ripple 3s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes ripple {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* Features Section - Responsive */
+    .features {
+      padding: 3rem 1rem;
+      text-align: center;
+      background: var(--card-bg);
+    }
+
+    .section-title {
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      margin-bottom: 2rem;
+      position: relative;
+      display: inline-block;
+    }
+
+    .section-title::after {
+      content: '';
+      position: absolute;
+      width: 50%;
+      height: 3px;
+      bottom: -10px;
+      left: 25%;
+      background: var(--accent);
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      padding: 0 1rem;
+    }
+
+    .card {
+      background: var(--bg);
+      padding: 1.5rem;
+      border-radius: 1rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .card img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      border-radius: 0.5rem;
+      margin-bottom: 1rem;
+      transition: transform 0.3s;
+      max-height: 200px;
+    }
+
+    .card:hover img {
+      transform: scale(1.05);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.75rem;
+      color: var(--accent);
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Video Carousel - Responsive */
+    .video-carousel {
+      padding: 3rem 1rem;
+      text-align: center;
+      background: var(--bg);
+    }
+
+    .carousel-container {
+      position: relative;
+      max-width: min(800px, 100%);
+      margin: 0 auto;
+      overflow: hidden;
+      border-radius: 0.5rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .carousel-slide {
+      display: flex;
+      width: 100%;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .carousel-slide video {
+      min-width: 100%;
+      height: auto;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      padding: 0.5rem;
+      cursor: pointer;
+      z-index: 10;
+      border-radius: 50%;
+      transition: all 0.3s;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-btn:hover {
+      background: rgba(0,0,0,0.8);
+    }
+
+    #prevBtn {
+      left: 10px;
+    }
+
+    #nextBtn {
+      right: 10px;
+    }
+
+    /* Testimonials - Responsive */
+    .testimonials {
+      padding: 3rem 1rem;
+      background: var(--card-bg);
+      text-align: center;
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      padding: 0 1rem;
+    }
+
+    .testimonial-card {
+      background: var(--bg);
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .testimonial-card::before {
+      content: '"';
+      position: absolute;
+      top: 10px;
+      left: 15px;
+      font-size: 3rem;
+      color: var(--accent);
+      opacity: 0.2;
+      font-family: serif;
+    }
+
+    .testimonial-card p {
+      font-style: italic;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .testimonial-card .author {
+      font-weight: bold;
+      color: var(--accent);
+      font-size: 0.9rem;
+    }
+
+    /* Stats Section - Responsive */
+    .stats {
+      padding: 3rem 1rem;
+      background: var(--bg);
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(150px, 100%), 1fr));
+      gap: 1.5rem;
+      margin-top: 1.5rem;
+      padding: 0 1rem;
+    }
+
+    .stat-item {
+      background: var(--accent);
+      color: white;
+      padding: 1.5rem;
+      border-radius: 0.75rem;
+      transition: all 0.3s;
+    }
+
+    .stat-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+    }
+
+    /* Contact Section - Responsive */
+    .contact {
+      padding: 3rem 1rem;
+      background: var(--card-bg);
+      text-align: center;
+    }
+
+    .contact-form {
+      max-width: min(600px, 100%);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      padding: 0 1rem;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 0.5rem;
+      background: var(--bg);
+      color: var(--text);
+      transition: all 0.3s;
+      width: 100%;
+      font-size: 1rem;
+    }
+
+    .contact-form input:focus,
+    .contact-form textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0, 119, 255, 0.2);
+    }
+
+    .contact-form textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      padding: 0.8rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover {
+      background: #0066cc;
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Footer - Responsive */
+    .footer {
+      background: var(--accent);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+
+    .social-links a {
+      color: white;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+    }
+
+    .social-links a:hover {
+      transform: translateY(-3px);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Parallax Effect - Disabled for mobile */
+    .parallax {
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-align: center;
+      position: relative;
+      margin: 1rem 0;
+    }
+
+    .parallax::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+    }
+
+    .parallax-content {
+      position: relative;
+      z-index: 1;
+      padding: 0 1rem;
+    }
+
+    .parallax h2 {
+      font-size: clamp(1.5rem, 4vw, 2rem);
+      margin-bottom: 0.5rem;
+    }
+
+    .parallax p {
+      font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    }
+
+    /* Mobile Menu - Hidden by default */
+    .mobile-menu-btn {
+      display: none;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    /* Responsive Breakpoints */
+    @media (min-width: 768px) {
+      /* Tablet and Desktop Styles */
+      .navbar {
+        gap: 1.5rem;
+        padding: 1rem;
+        flex-wrap: nowrap;
+      }
+      
+      .navbar a {
+        font-size: 1rem;
+        padding: 0.75rem;
+      }
+      
+      .hero {
+        padding: 3rem 1rem;
+      }
+      
+      .features {
+        padding: 4rem 1rem;
+      }
+      
+      .feature-grid {
+        gap: 2rem;
+        padding: 0 2rem;
+      }
+      
+      .card {
+        padding: 2rem;
+      }
+      
+      .video-carousel {
+        padding: 4rem 1rem;
+      }
+      
+      .testimonials {
+        padding: 4rem 1rem;
+      }
+      
+      .testimonial-grid {
+        gap: 2rem;
+        padding: 0 2rem;
+      }
+      
+      .stats-grid {
+        gap: 2rem;
+        padding: 0 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      }
+      
+      .contact {
+        padding: 4rem 1rem;
+      }
+      
+      .contact-form {
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+      }
+      
+      .contact-form textarea {
+        grid-column: span 2;
+      }
+      
+      .submit-btn {
+        grid-column: span 2;
+      }
+      
+      .parallax {
+        height: 250px;
+        background-attachment: fixed;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      /* Large Desktop Styles */
+      .hero {
+        padding: 4rem 1rem;
+      }
+      
+      .features {
+        padding: 5rem 1rem;
+      }
+      
+      .feature-grid {
+        padding: 0 4rem;
+      }
+      
+      .video-carousel {
+        padding: 5rem 1rem;
+      }
+      
+      .testimonials {
+        padding: 5rem 1rem;
+      }
+      
+      .testimonial-grid {
+        padding: 0 4rem;
+      }
+      
+      .stats {
+        padding: 5rem 1rem;
+      }
+      
+      .stats-grid {
+        padding: 0 4rem;
+      }
+      
+      .contact {
+        padding: 5rem 1rem;
+      }
+      
+      .contact-form {
+        padding: 0;
+      }
+      
+      .parallax {
+        height: 300px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      /* Mobile-specific adaptations */
+      .navbar {
+        flex-direction: column;
+        align-items: center;
+        display: none; /* Hidden initially */
+      }
+      
+      .navbar.active {
+        display: flex;
+      }
+      
+      .mobile-menu-btn {
+        display: block;
+        position: fixed;
+        top: 0.5rem;
+        left: 0.5rem;
+        z-index: 100;
+      }
+      
+      .theme-toggle-mobile {
+        right: 4rem !important;
+      }
+      
+      .carousel-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.8rem;
+      }
+      
+      .stat-number {
+        font-size: 1.75rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      /* Small mobile devices */
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+      
+      .hero p {
+        font-size: 1.1rem;
+      }
+      
+      .section-title {
+        font-size: 1.8rem;
+      }
+      
+      .stat-number {
+        font-size: 1.5rem;
+      }
+      
+      .stat-label {
+        font-size: 0.8rem;
+      }
+      
+      .contact-form input,
+      .contact-form textarea,
+      .submit-btn {
+        padding: 0.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Loader -->
+  <div id="loader">
+    <div class="loader-circle"></div>
+  </div>
+
+  <!-- Mobile Menu Button (visible only on small screens) -->
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">☰</button>
+
+  <!-- Theme Toggle -->
+  <button id="theme-toggle" class="theme-toggle-mobile" aria-label="Toggle light/dark mode">🌙</button>
+
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <a href="#home">Home</a>
+    <a href="#features">Features</a>
+    <a href="#carousel">Showcase</a>
+    <a href="#testimonials">Testimonials</a>
+    <a href="#stats">Stats</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <h1>Creative Digital Experience</h1>
+    <p>Where innovation meets design</p>
+    <button class="hero-btn">Explore More</button>
+    
+    <!-- Ripple Effects -->
+    <div class="ripple" style="left: 30%; top: 40%; animation-delay: 0s;"></div>
+    <div class="ripple" style="left: 60%; top: 50%; animation-delay: 1s;"></div>
+    <div class="ripple" style="left: 45%; top: 60%; animation-delay: 2s;"></div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <h2 class="section-title">Our Features</h2>
+    <div class="feature-grid">
+      <div class="card">
+        <img src="graph.png" alt="Analytics Dashboard" loading="lazy">
+        <h3>Advanced Analytics</h3>
+        <p>Get real-time insights with our powerful analytics dashboard that helps you make data-driven decisions.</p>
+      </div>
+      <div class="card">
+        <img src="cards.png" alt="Custom Cards" loading="lazy">
+        <h3>Custom Components</h3>
+        <p>Beautifully designed components that you can customize to match your brand identity.</p>
+      </div>
+      <div class="card">
+        <img src="stats.png" alt="Performance Stats" loading="lazy">
+        <h3>Performance Metrics</h3>
+        <p>Track your performance with detailed metrics and visualizations that tell your success story.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Parallax Section -->
+  <div class="parallax" style="background-image: url('cards.png');">
+    <div class="parallax-content">
+      <h2>Design That Inspires</h2>
+      <p>Crafting digital experiences that captivate and engage your audience</p>
+    </div>
+  </div>
+
+  <!-- Video Carousel -->
+  <section id="carousel" class="video-carousel">
+    <h2 class="section-title">Our Work</h2>
+    <div class="carousel-container">
+      <div class="carousel-slide">
+        <video controls autoplay muted loop playsinline>
+          <source src="caraousel switch.mp4" type="video/mp4">
+          Your browser doesn't support video.
+        </video>
+        <video controls autoplay muted loop playsinline>
+          <source src="parallax animation.mp4" type="video/mp4">
+          Your browser doesn't support video.
+        </video>
+        <video controls autoplay muted loop playsinline>
+          <source src="ripple effect.mp4" type="video/mp4">
+          Your browser doesn't support video.
+        </video>
+      </div>
+      <button class="carousel-btn" id="prevBtn">❮</button>
+      <button class="carousel-btn" id="nextBtn">❯</button>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section id="testimonials" class="testimonials">
+    <h2 class="section-title">What Our Clients Say</h2>
+    <div class="testimonial-grid">
+      <div class="testimonial-card">
+        <p>This platform transformed our business operations. The analytics tools provided insights we never knew were possible.</p>
+        <div class="author">- Sarah Johnson, CEO</div>
+      </div>
+      <div class="testimonial-card">
+        <p>The design team exceeded our expectations. The user experience is seamless and our customers love it.</p>
+        <div class="author">- Michael Chen, CTO</div>
+      </div>
+      <div class="testimonial-card">
+        <p>From concept to launch, the process was smooth and professional. We've seen a 40% increase in engagement.</p>
+        <div class="author">- Emily Rodriguez, Marketing Director</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section id="stats" class="stats">
+    <h2 class="section-title">By The Numbers</h2>
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-number" id="projects-count">0</div>
+        <div class="stat-label">Completed Projects</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="clients-count">0</div>
+        <div class="stat-label">Satisfied Clients</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="hours-count">0</div>
+        <div class="stat-label">Development Hours</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="coffee-count">0</div>
+        <div class="stat-label">Cups of Coffee</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact">
+    <h2 class="section-title">Get In Touch</h2>
+    <form class="contact-form">
+      <input type="text" placeholder="Your Name" required>
+      <input type="email" placeholder="Your Email" required>
+      <input type="text" placeholder="Subject">
+      <textarea placeholder="Your Message" required></textarea>
+      <button type="submit" class="submit-btn">Send Message</button>
+    </form>
+  </section>
+
+  <!-- Footer -->
+  <!-- Footer -->
+<footer class="footer">
+  <p>© 2023 Fully Responsive Showcase. All rights reserved.</p>
+  <div class="social-links">
+    <a href="#" aria-label="Facebook">
+      <img src="https://static.vecteezy.com/system/resources/previews/018/930/698/non_2x/facebook-logo-facebook-icon-transparent-free-png.png" alt="Facebook Logo" width="30" height="30">
+    </a>
+    <a href="#" aria-label="Twitter">
+      <img src="https://img.freepik.com/free-vector/twitter-new-2023-x-logo-white-background-vector_1017-45422.jpg?semt=ais_hybrid&w=740"alt="Twitter Logo" width="30" height="30">
+    </a>
+    <a href="#" aria-label="Instagram">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/2048px-Instagram_logo_2016.svg.png" alt="Instagram Logo" width="30" height="30">
+    </a>
+    <a href="#" aria-label="LinkedIn">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/LinkedIn_logo_initials.png/500px-LinkedIn_logo_initials.png" alt="LinkedIn Logo" width="30" height="30">
+    </a>
+  </div>
+</footer>
+
+
+  <script>
+    // Loader
+    window.addEventListener("load", () => {
+      setTimeout(() => {
+        document.getElementById("loader").style.display = "none";
+      }, 1000); // Added slight delay for better UX
+    });
+
+    // Dark/Light Toggle
+    const toggle = document.getElementById("theme-toggle");
+    toggle.addEventListener("click", () => {
+      document.body.classList.toggle("dark");
+      toggle.textContent = document.body.classList.contains("dark") ? "☀️" : "🌙";
+    });
+
+    // Mobile Menu Toggle
+    const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+    const navbar = document.getElementById("navbar");
+    
+    mobileMenuBtn.addEventListener("click", () => {
+      navbar.classList.toggle("active");
+      mobileMenuBtn.textContent = navbar.classList.contains("active") ? "✕" : "☰";
+    });
+
+    // Close mobile menu when clicking a link
+    document.querySelectorAll('.navbar a').forEach(link => {
+      link.addEventListener('click', () => {
+        if (window.innerWidth < 768) {
+          navbar.classList.remove('active');
+          mobileMenuBtn.textContent = "☰";
+        }
+      });
+    });
+
+    // Smooth Scrolling for Nav Links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+
+    // Video Carousel - Responsive
+    const carouselSlide = document.querySelector('.carousel-slide');
+    const carouselVideos = document.querySelectorAll('.carousel-slide video');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    let counter = 0;
+    const size = carouselVideos[0].clientWidth;
+    
+    function updateCarousel() {
+      const currentSize = carouselVideos[0].clientWidth;
+      carouselSlide.style.transform = 'translateX(' + (-currentSize * counter) + 'px)';
+    }
+    
+    carouselSlide.style.transform = 'translateX(' + (-size * counter) + 'px)';
+    
+    nextBtn.addEventListener('click', () => {
+      if (counter >= carouselVideos.length - 1) return;
+      carouselSlide.style.transition = "transform 0.5s ease-in-out";
+      counter++;
+      updateCarousel();
+    });
+    
+    prevBtn.addEventListener('click', () => {
+      if (counter <= 0) return;
+      carouselSlide.style.transition = "transform 0.5s ease-in-out";
+      counter--;
+      updateCarousel();
+    });
+    
+    // Handle window resize
+    window.addEventListener('resize', () => {
+      carouselSlide.style.transition = "none";
+      updateCarousel();
+    });
+
+    // Animated Stats Counter
+    function animateValue(id, start, end, duration) {
+      const obj = document.getElementById(id);
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.innerHTML = Math.floor(progress * (end - start) + start);
+        if (progress < 1) {
+          window.requestAnimationFrame(step);
+        }
+      };
+      window.requestAnimationFrame(step);
+    }
+
+    // Start counters when stats section is in view
+    const statsSection = document.getElementById('stats');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateValue('projects-count', 0, 250, 2000);
+          animateValue('clients-count', 0, 120, 2000);
+          animateValue('hours-count', 0, 5000, 2000);
+          animateValue('coffee-count', 0, 1000, 2000);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 }); // Adjusted threshold for mobile
+
+    observer.observe(statsSection);
+
+    // Ripple Effect - Responsive sizing
+    document.querySelectorAll('.ripple').forEach(ripple => {
+      const size = Math.min(window.innerWidth, window.innerHeight) * 0.2;
+      ripple.style.width = ripple.style.height = `${size}px`;
+    });
+
+    // Hero Button Animation
+    const heroBtn = document.querySelector('.hero-btn');
+    heroBtn.addEventListener('click', () => {
+      heroBtn.textContent = 'Loading...';
+      setTimeout(() => {
+        heroBtn.textContent = 'Explore More';
+        document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+      }, 1000);
+    });
+
+    // Card Animation on Scroll
+    const cards = document.querySelectorAll('.card, .testimonial-card, .stat-item');
+    const cardObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'fadeInUp 0.6s ease-out forwards';
+          cardObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    cards.forEach(card => {
+      card.style.opacity = '0';
+      cardObserver.observe(card);
+    });
+
+    // Disable parallax on mobile devices for performance
+    const parallax = document.querySelector('.parallax');
+    function checkParallaxSupport() {
+      if (window.innerWidth < 768 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        parallax.style.backgroundAttachment = 'scroll';
+      } else {
+        parallax.style.backgroundAttachment = 'fixed';
+      }
+    }
+    
+    checkParallaxSupport();
+    window.addEventListener('resize', checkParallaxSupport);
+
+    // Lazy loading for images
+    if ('loading' in HTMLImageElement.prototype) {
+      // Native lazy loading is supported
+      document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        img.loading = 'lazy';
+      });
+    } else {
+      // Fallback for browsers without native lazy loading
+      const lazyLoadObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target;
+            img.src = img.dataset.src;
+            lazyLoadObserver.unobserve(img);
+          }
+        });
+      });
+
+      document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+        img.dataset.src = img.src;
+        img.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3QgZmlsbD0iI2VlZSIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiLz48L3N2Zz4=';
+        lazyLoadObserver.observe(img);
+      });
+    }
+  </script>
+</body>
+</html>
