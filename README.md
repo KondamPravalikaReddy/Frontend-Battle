@@ -27,7 +27,7 @@ Welcome to **Innovista**, a fully responsive and interactive showcase website th
 ---
 
 ## Getting Started
-   Live Demo:
+   Live Demo:https://innovista-web.vercel.app/
 
 ### Prerequisites
 
